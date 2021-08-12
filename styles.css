@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
+
+* {
+  color: white;
+  background-color: black;
+  background: black;
+  font-family: 'IBM Plex Mono';
+}
+
+.navbutton {
+  margin: 20;
+}
