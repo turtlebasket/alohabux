@@ -1,14 +1,8 @@
-// let ip;
-// fetch('http://www.ipinfo.io/ip').then(data => {
-//   ip = data;
-// })
-
 let miner_id = createUUID();
 let chain = [];
 let current_transactions = []
 let peers = []
 const BLOCK_SIZE = 5;
-var MT = new Multithread(4);
 
 // Listeners
 
@@ -24,7 +18,7 @@ const refreshChain = () => {
 
 const initialize_raw = () => {
   // let hash;
-  digestTxt("").then(dat => {
+  digestTxt("init").then(dat => {
     const block = {
       timestamp: Date.now() / 1000 | 0,
       data: {},
@@ -64,7 +58,7 @@ const addBlock = () => {
   });
 }
 
-// proof of work: shitty hashcash clone; currently taking way too long
+// proof of work: shitty hashcash clone; currently taking way too long for a memecoin
 const mineBlock = async (data) => { 
   if (current_transactions.length != BLOCK_SIZE) return;
   console.log("Mining block.")
@@ -72,10 +66,15 @@ const mineBlock = async (data) => {
   let y = 0;
   while (true) {
   // for (let i of [1, 2, 3]) {
-    let val = await digestTxt(data, `${x*y}`);
-    if (val[val.length - 1 ?? 5 ] != 0) { // check if last character zero
+    let val = await digestTxt(`${data}${x*y}`);
+    let res = parseInt(val[val.length - 1]) ?? 100;
+    let res2 = parseInt(val[val.length - 2]) ?? 100;
+    console.log(`Trying Y=${y} Val=${val}`)
+    if (!(res == 0) || isNaN(res2)) { // check if last character is acceptable
       y += 1;
     } else {
+      console.log(res)
+      console.log(`Done.\nNonce: ${y}\nHash: ${val}`)
       return y;
     }
   }
