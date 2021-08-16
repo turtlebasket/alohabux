@@ -3,8 +3,13 @@ let chain = [];
 let current_transactions = []
 let peers = []
 const BLOCK_SIZE = 5;
+const POW_DIFFICULTY = 4;
 
-// Listeners
+let miner_address = document.cookie.publicKey ?? "";
+document.getElementById("start-mining-button").onclick = () => {
+  miner_address = document.getElementById("wallet-input").value;
+  initialize_raw();
+}
 
 // Function/BC action defs
 
@@ -42,19 +47,17 @@ const addBlock = () => {
     hdata.push(`${t.timestamp} ${t.sender} ${t.recipient} ${t.amount}`);
   });
   hdata.push(prevHash);
-  mineBlock(prevHash).then(nonce => {
-    digestTxt(...hdata).then(hash => {
-      const block = {
-        timestamp: Date.now() / 1000 | 0,
-        data: data,
-        hash: hash,
-        prevHash: prevHash,
-        nonce: nonce
-      }
-      chain.push(block);
-      console.log(block)
-      current_transactions = [];
-    });
+  mineBlock(...hdata).then(({hash, nonce}) => {
+    const block = {
+      timestamp: Date.now() / 1000 | 0,
+      data: data,
+      hash: hash,
+      prevHash: prevHash,
+      nonce: nonce
+    }
+    chain.push(block);
+    console.log(block)
+    current_transactions = [];
   });
 }
 
@@ -65,17 +68,25 @@ const mineBlock = async (data) => {
   let x = 5;
   let y = 0;
   while (true) {
-  // for (let i of [1, 2, 3]) {
+    let valid = false;
     let val = await digestTxt(`${data}${x*y}`);
-    let res = parseInt(val[val.length - 1]) ?? 100;
-    let res2 = parseInt(val[val.length - 2]) ?? 100;
-    console.log(`Trying Y=${y} Val=${val}`)
-    if (!(res == 0) || isNaN(res2)) { // check if last character is acceptable
+    for (let c = 0; c < POW_DIFFICULTY; c++) {
+      res = parseInt(val[val.length - (c+1)]) ?? 100;
+
+      if (!(res == 0)) { // check if res character is acceptable
+        valid = false;
+        break;
+      } else {
+        valid = true;
+      }
+    }
+
+    if (!valid) {
       y += 1;
     } else {
       console.log(res)
       console.log(`Done.\nNonce: ${y}\nHash: ${val}`)
-      return y;
+      return {val, y};
     }
   }
 }
@@ -106,6 +117,3 @@ function createUUID() {
      return v.toString(16);
   });
 }
-
-// init
-initialize_raw();
