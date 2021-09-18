@@ -7,7 +7,7 @@ const POW_DIFFICULTY = 4;
 
 let miner_address = document.cookie.publicKey ?? "";
 document.getElementById("start-mining-button").onclick = () => {
-  miner_address = document.getElementById("wallet-input").value;
+  // miner_address = document.getElementById("wallet-input").value;
   initialize_raw();
 }
 

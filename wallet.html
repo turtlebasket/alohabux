@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8"/>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
     <link rel="stylesheet" type="text/css" href="styles.css"/>
     <title>AlohaBux Wallet</title>
-    <script src="mine.js" type="text/javascript"></script>
   </head>
   <body>
     <div style="align-self: center; align-content: center;" align="center">
@@ -13,7 +13,16 @@
         <h1>W A L L E T</h1>
       </div>
       <div>
+        <p id="pubkey-display"></p>
+        <p id="privkey-display"></p>
+      </div>
+      <div>
+        <button id="show-hide-pkey">Show/Hide Private Key</button>
+        <button id="generate-keys-button">Generate New Wallet</button>
       </div>
     </div>
+
+    <script type="text/javascript" src="lib/cookie.min.js"></script>
+    <script src="wallet.js" type="text/javascript"></script>
   </body>
 </html>
